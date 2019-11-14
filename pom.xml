@@ -43,9 +43,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.tomee</groupId>
+            <groupId>org.apache.openejb</groupId>
             <artifactId>openejb-core</artifactId>
-            <version>${tomee.version}</version>
+            <version>${openejb.version}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -70,13 +70,13 @@
             </activation>
             <dependencies>
                 <dependency>
-                    <groupId>org.apache.tomee</groupId>
+                    <groupId>org.apache.openejb</groupId>
                     <artifactId>javaee-api</artifactId>
                     <version>${tomee.javaee.api}</version>
                     <scope>provided</scope>
                 </dependency>
                 <dependency>
-                    <groupId>org.apache.tomee</groupId>
+                    <groupId>org.apache.openejb</groupId>
                     <artifactId>arquillian-tomee-embedded</artifactId>
                     <version>${tomee.version}</version>
                     <scope>test</scope>
@@ -85,15 +85,18 @@
         </profile>
         <profile>
             <id>arquillian=tomee-managed</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
             <dependencies>
                 <dependency>
-                    <groupId>org.apache.tomee</groupId>
+                    <groupId>org.apache.openejb</groupId>
                     <artifactId>javaee-api</artifactId>
                     <version>${tomee.javaee.api}</version>
                     <scope>provided</scope>
                 </dependency>
                 <dependency>
-                    <groupId>org.apache.tomee</groupId>
+                    <groupId>org.apache.openejb</groupId>
                     <artifactId>arquillian-tomee-remote</artifactId>
                     <version>${tomee.version}</version>
                     <scope>test</scope>
@@ -116,13 +119,13 @@
             <id>arquillian=tomee-remote</id>
             <dependencies>
                 <dependency>
-                    <groupId>org.apache.tomee</groupId>
+                    <groupId>org.apache.openejb</groupId>
                     <artifactId>javaee-api</artifactId>
                     <version>${tomee.javaee.api}</version>
                     <scope>provided</scope>
                 </dependency>
                 <dependency>
-                    <groupId>org.apache.tomee</groupId>
+                    <groupId>org.apache.openejb</groupId>
                     <artifactId>arquillian-tomee-remote</artifactId>
                     <version>${tomee.version}</version>
                     <scope>test</scope>
@@ -146,13 +149,13 @@
             <id>arquillian=tomee-managed-or-remote</id>
             <dependencies>
                 <dependency>
-                    <groupId>org.apache.tomee</groupId>
+                    <groupId>org.apache.openejb</groupId>
                     <artifactId>javaee-api</artifactId>
                     <version>${tomee.javaee.api}</version>
                     <scope>provided</scope>
                 </dependency>
                 <dependency>
-                    <groupId>org.apache.tomee</groupId>
+                    <groupId>org.apache.openejb</groupId>
                     <artifactId>arquillian-tomee-remote</artifactId>
                     <version>${tomee.version}</version>
                     <scope>test</scope>
@@ -163,8 +166,9 @@
     <properties>
         <arquillian.version>1.1.12.Final</arquillian.version>
         <tomee.classifier>webprofile</tomee.classifier>
-        <tomee.version>8.0.0</tomee.version>
-        <tomee.javaee.api>8.0-2</tomee.javaee.api>
+        <tomee.version>1.7.2</tomee.version>
+        <openejb.version>4.7.2</openejb.version>
+        <tomee.javaee.api>6.0-6</tomee.javaee.api>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <failOnMissingWebXml>false</failOnMissingWebXml>
         <maven.compiler.target>1.8</maven.compiler.target>

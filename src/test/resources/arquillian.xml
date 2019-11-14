@@ -6,7 +6,7 @@
         <!-- Uncomment the following property to have Arquillian write the test archive to disk in exploded format -->
         <!--<property name="deploymentExportExploded">true</property>-->
     </engine>
-    <container qualifier="tomee-embedded" default="true">
+    <container qualifier="tomee-embedded">
         <configuration>
             <property name="httpPort">-1</property>
             <property name="stopPort">-1</property>
@@ -16,10 +16,15 @@
                 movieDatabase.JdbcDriver=org.hsqldb.jdbcDriver
                 movieDatabase.JdbcUrl=jdbc:hsqldb:mem:moviedb
                 movieDatabase.accessToUnderlyingConnectionAllowed=true
+                movieDatabase.maxActive=5
+                movieDatabase.minIdle=0
+                movieDatabase.maxIdle=5
+                movieDatabase.initialSize=5
+                movieDatabase.JMXEnabled=true
             </property>
         </configuration>
     </container>
-    <container qualifier="tomee-managed">
+    <container qualifier="tomee-managed" default="true">
         <configuration>
             <property name="httpPort">-1</property>
             <property name="stopPort">-1</property>
@@ -38,6 +43,11 @@
                 movieDatabase.JdbcDriver=org.hsqldb.jdbcDriver
                 movieDatabase.JdbcUrl=jdbc:hsqldb:mem:moviedb
                 movieDatabase.accessToUnderlyingConnectionAllowed=true
+                movieDatabase.maxActive=5
+                movieDatabase.minIdle=0
+                movieDatabase.maxIdle=5
+                movieDatabase.initialSize=5
+                movieDatabase.JMXEnabled=true
             </property>
         </configuration>
         <protocol type="Servlet 3.0"/>
@@ -53,6 +63,11 @@
                 movieDatabase.JdbcDriver=org.hsqldb.jdbcDriver
                 movieDatabase.JdbcUrl=jdbc:hsqldb:mem:moviedb
                 movieDatabase.accessToUnderlyingConnectionAllowed=true
+                movieDatabase.maxActive=5
+                movieDatabase.minIdle=0
+                movieDatabase.maxIdle=5
+                movieDatabase.initialSize=5
+                movieDatabase.JMXEnabled=true
             </property>
         </configuration>
         <protocol type="Servlet 3.0"/>

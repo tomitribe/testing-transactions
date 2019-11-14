@@ -3,12 +3,9 @@ package com.tomitribe.training.setup;
 import org.apache.geronimo.transaction.manager.TransactionImpl;
 import org.apache.openejb.core.ThreadContext;
 import org.apache.openejb.loader.SystemInstance;
-import org.apache.openejb.resource.jdbc.managed.local.Key;
-import org.apache.openejb.resource.jdbc.managed.local.ManagedDataSource;
 
 import javax.annotation.Resource;
 import javax.ejb.SessionContext;
-import javax.sql.CommonDataSource;
 import javax.sql.DataSource;
 import javax.transaction.TransactionManager;
 import java.sql.Connection;
@@ -39,21 +36,23 @@ public class DatabaseConnectionBean implements DatabaseConnection {
                 ctx.getUserTransaction().begin();
             }
 
-            try {
-                try (final Connection conn = dataSource.getConnection();
-                     final PreparedStatement ps = conn.prepareStatement("VALUES 1");
-                     final ResultSet rs = ps.executeQuery()) {
+            for (int i = 0; i < 5; i++) {
+                try {
+                    try (final Connection conn = dataSource.getConnection();
+                         final PreparedStatement ps = conn.prepareStatement("VALUES 1");
+                         final ResultSet rs = ps.executeQuery()) {
 
-                    int rowCount = 0;
+                        int rowCount = 0;
 
-                    while (rs.next()) {
-                        rowCount++;
+                        while (rs.next()) {
+                            rowCount++;
+                        }
+
+                        logger.info("Received " + rowCount + " row(s) from the database");
                     }
-
-                    logger.info("Received " + rowCount + " row(s) from the database");
+                } catch (SQLException e) {
+                    logger.severe("Error querying database: " + e.getMessage());
                 }
-            } catch (SQLException e) {
-                logger.severe("Error querying database: " + e.getMessage());
             }
 
 
@@ -67,19 +66,6 @@ public class DatabaseConnectionBean implements DatabaseConnection {
             }
 
             Connection txConnection = null;
-
-            if (currentTx != null) {
-                try {
-                    ManagedDataSource mds = (ManagedDataSource) dataSource;
-                    final CommonDataSource delegate = mds.getDelegate();
-
-                    final Key key = new Key(delegate, null, null);
-                    final Connection proxyConnection = (Connection) currentTx.getResource(key);
-                    txConnection = proxyConnection.unwrap(Connection.class);
-                } catch (Exception e) {
-                    // ignore
-                }
-            }
 
             final TransactionInfo transactionInfo = new TransactionInfo(
                     ThreadContext.getThreadContext().getBeanContext().getDeploymentID().toString(),

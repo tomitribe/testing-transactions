@@ -8,12 +8,16 @@ import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
+import java.lang.management.ManagementFactory;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
@@ -35,19 +39,26 @@ public class ApparatusTest {
 
     @Test
     public void shouldSayHiFromContainer() throws Exception {
-        final DatabaseConnection db = Lookup.lookup(TransactionType.REQUIRES_NEW);
-        final List<TransactionInfo> transactionInfos = db.process(Arrays.asList(
-                TransactionType.REQUIRED,
-                TransactionType.REQUIRES_NEW,
-                TransactionType.BEAN_MANAGED,
-                TransactionType.SUPPORTS,
-                TransactionType.MANDATORY,
-                TransactionType.NOT_SUPPORTED));
 
-        for (final TransactionInfo transactionInfo : transactionInfos) {
-            System.out.println(transactionInfo.toString());
+        final MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+        final ObjectName objectName = new ObjectName("openejb.management:ObjectType=datasources,DataSource=movieDatabase");
+        int activeStart = (int) mbs.getAttribute(objectName, "Active");
+        Assert.assertEquals(0, activeStart);
+
+        for (int i = 0; i < 10; i++) {
+            System.out.println("Run " + i);
+            final DatabaseConnection db = Lookup.lookup(TransactionType.BEAN_MANAGED);
+            final List<TransactionInfo> transactionInfos = db.process(Arrays.asList(
+                    TransactionType.BEAN_MANAGED,
+                    TransactionType.BEAN_MANAGED,
+                    TransactionType.BEAN_MANAGED));
+
+            for (final TransactionInfo transactionInfo : transactionInfos) {
+                System.out.println(transactionInfo.toString());
+            }
         }
+
+        int activeEnd = (int) mbs.getAttribute(objectName, "Active");
+        Assert.assertEquals(0, activeEnd);
     }
-
-
 }
